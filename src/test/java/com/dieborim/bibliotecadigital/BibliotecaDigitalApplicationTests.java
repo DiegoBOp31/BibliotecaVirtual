@@ -1,4 +1,4 @@
-package com.dieborim.Biblioteca._digital;
+package com.dieborim.bibliotecadigital;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
