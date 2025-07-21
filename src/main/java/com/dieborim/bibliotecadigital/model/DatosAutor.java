@@ -16,4 +16,8 @@ public record DatosAutor(
         @JsonAlias("name") String nombre,
         @JsonAlias("birth_year") Integer fechaNacimiento,
         @JsonAlias("death_year") Integer fechaFallecimiento) {
+    /**
+     * Aquí estamos mapeando los datos que vamos a obtener de la api que estamos consultando
+     * Sólo mando a llamar los datos del autor
+     */
 }

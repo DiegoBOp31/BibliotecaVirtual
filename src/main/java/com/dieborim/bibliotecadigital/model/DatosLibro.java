@@ -9,7 +9,11 @@ import java.util.List;
 public record DatosLibro(
         @JsonAlias("title") String titulo,
         @JsonAlias("authors") List<DatosAutor> autores,
-        @JsonAlias("languages") String idioma,
-        @JsonAlias("download_count") String numeroDescargas
+        @JsonAlias("languages") List<String> idiomas,
+        @JsonAlias("download_count") Integer numeroDescargas
 ) {
+    /**
+     * Aquí estamos mapeando los datos que vamos a obtener de la api que estamos consultando
+     * Aquí llamamos los datos del libro que queremos buscar
+     */
 }
