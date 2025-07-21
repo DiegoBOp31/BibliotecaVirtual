@@ -17,25 +17,35 @@ public enum Idiomas {
     fi ("finés"),
     sv ("sueco"),
     pt ("portugués"),
-    la ("latín");
+    la ("latín"),
+    UNKNOWN("desconocido"); // Nuevo idioma por defecto
 
-    private String idiomasGutendex;
 
-    Idiomas(String idiomasGutendex){
-        this.idiomasGutendex = idiomasGutendex;
+    private final String nombreIdioma;
+
+    Idiomas(String nombreIdioma) {
+        this.nombreIdioma = nombreIdioma;
     }
 
-    public static Idiomas fromList(List<String> idiomas){
-        //Compara ese primer idioma del libro con todos los valores que tenemos en tu enum Idiomas
-        for (Idiomas idioma : Idiomas.values()){
-            //Si lo encuentra lo devuelve como resultado
-            if(idioma.idiomasGutendex.equalsIgnoreCase(idiomas.get(0))){
-                return idioma;
-            }
+    /**
+     * Este método toma una lista de códigos de idioma (por ejemplo ["en", "es"])
+     * y devuelve el primero que coincida con los que tiene el enum.
+     * Si la lista está vacía o el idioma no está soportado, lanza una excepción.
+     */
+    public static Idiomas fromList(List<String> idiomas) {
+        if (idiomas == null || idiomas.isEmpty()) {
+            return UNKNOWN;
         }
-        //Si no lo encuentra, lanza una excepción para decir que ese idioma no es válido
-        throw new IllegalArgumentException("Ningún idioma encontrado: "+idiomas.get(0));
+        String codigo = idiomas.get(0); // Tomamos el primer código de idioma, ej: "en"
+        try {
+            return Idiomas.valueOf(codigo); // Compara con el nombre de las constantes del enum
+        } catch (IllegalArgumentException e) {
+            return UNKNOWN;
+        }
     }
 
 
+    public String getNombreIdioma() {
+        return nombreIdioma;
+    }
 }
