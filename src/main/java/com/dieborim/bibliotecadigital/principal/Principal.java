@@ -1,5 +1,6 @@
 package com.dieborim.bibliotecadigital.principal;
 
+import com.dieborim.bibliotecadigital.model.DatosAutor;
 import com.dieborim.bibliotecadigital.model.DatosLibro;
 import com.dieborim.bibliotecadigital.model.DatosResults;
 import com.dieborim.bibliotecadigital.repository.LibroRepository;
@@ -89,7 +90,8 @@ public class Principal {
                 .findFirst();
         if(libroEncontrado.isPresent()){
             System.out.println("Libro encontrado");
-            System.out.println(libroEncontrado.get());
+            Optional<DatosAutor> autorDelLibro = libroEncontrado.get().autores().stream()
+                    .findFirst();
         }else {
             System.out.println("Libro no encontrado");
         }
