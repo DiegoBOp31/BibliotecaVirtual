@@ -1,6 +1,7 @@
 package com.dieborim.bibliotecadigital;
 
 import com.dieborim.bibliotecadigital.principal.Principal;
+import com.dieborim.bibliotecadigital.repository.AutorRepository;
 import com.dieborim.bibliotecadigital.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,7 +16,9 @@ public class BibliotecaDigitalApplication implements CommandLineRunner {
 	 * crear manualmente un new LibroRepository(), Spring lo hace por nosotros
 	 */
 	@Autowired
-	private LibroRepository repository;
+	private LibroRepository libroRepository;
+	@Autowired
+	private AutorRepository autorRepository;
 	/*
     Spring detecta la interfáz y ejecuta el método run() justo después de levantar el contexto de la aplicación
     (es decir, "Cuando la app arranque, quiero que me dejes correr un bloque de código al inicio")
@@ -29,7 +32,7 @@ public class BibliotecaDigitalApplication implements CommandLineRunner {
 		/**
 		 * Aquí le pasamos el repository a nuestra clase principal para que pueda usar los métodos de LibroRepository
 		 */
-		Principal principal = new Principal(repository);
+		Principal principal = new Principal(libroRepository, autorRepository);
 		principal.muestraElMenu();
 
 	}

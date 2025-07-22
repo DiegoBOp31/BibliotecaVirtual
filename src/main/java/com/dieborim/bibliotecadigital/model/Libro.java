@@ -45,16 +45,16 @@ public class Libro {
          */
     }
 
-    /**
-     * Este método sirve para sincronizar la relación ManyToMany entre libros
-     * y autores desde el lado de la entidad Libro.
-     */
     public Libro(DatosLibro datosLibro){
         this.titulo = datosLibro.titulo();
         this.idiomas = Idiomas.fromList(datosLibro.idiomas());
         this.numeroDescargas = datosLibro.numeroDescargas();
     }
 
+    /**
+     * Este método sirve para sincronizar la relación ManyToMany entre libros
+     * y autores desde el lado de la entidad Libro.
+     */
     public void agregarAutor(Autor autor) {
         autores.add(autor);
         autor.getLibros().add(this);
@@ -76,8 +76,8 @@ public class Libro {
         Id = id;
     }
 
-    public Idiomas getIdiomas() {
-        return idiomas;
+    public String getIdiomas() {
+        return idiomas.getNombreIdioma();
     }
 
     public void setIdiomas(Idiomas idiomas) {

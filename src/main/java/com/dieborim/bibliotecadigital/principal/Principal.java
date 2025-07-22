@@ -1,8 +1,7 @@
 package com.dieborim.bibliotecadigital.principal;
 
-import com.dieborim.bibliotecadigital.model.DatosAutor;
-import com.dieborim.bibliotecadigital.model.DatosLibro;
-import com.dieborim.bibliotecadigital.model.DatosResults;
+import com.dieborim.bibliotecadigital.model.*;
+import com.dieborim.bibliotecadigital.repository.AutorRepository;
 import com.dieborim.bibliotecadigital.repository.LibroRepository;
 import com.dieborim.bibliotecadigital.service.ConsumoAPI;
 import com.dieborim.bibliotecadigital.service.ConvertirDatos;
@@ -19,10 +18,12 @@ public class Principal {
      */
     private final String URL_BASE = "https://gutendex.com/books?search=";
     private ConvertirDatos convertirDatos = new ConvertirDatos();
-    private LibroRepository repositorio;
+    private LibroRepository libroRepositorio;
+    private AutorRepository autorRepositorio;
 
-    public Principal(LibroRepository repository) {
-        this.repositorio = repository;
+    public Principal(LibroRepository libroRepository, AutorRepository autorRepository) {
+        this.libroRepositorio = libroRepository;
+        this.autorRepositorio = autorRepository;
     }
 
     public void muestraElMenu(){
@@ -89,9 +90,30 @@ public class Principal {
                 .filter(l -> l.titulo().toUpperCase().contains(libroBuscado.toUpperCase()))
                 .findFirst();
         if(libroEncontrado.isPresent()){
-            System.out.println("Libro encontrado");
-            Optional<DatosAutor> autorDelLibro = libroEncontrado.get().autores().stream()
-                    .findFirst();
+            var datosLibro = libroEncontrado.get();
+            // Creamos una instancia de la entidad Libro usando los datos que vinieron de la API
+            var libro = new Libro(datosLibro);
+            // Por cada autor que vino en la API, buscamos si ya existe en la base de datos
+            // Si no existe, lo creamos. Luego lo asociamos al libro.
+            for (DatosAutor datosAutor : datosLibro.autores()) {
+                Autor autor = autorRepositorio.findByNombre(datosAutor.nombre())
+                        .orElseGet(() -> new Autor(datosAutor)); // Si no existe, lo crea
+                libro.agregarAutor(autor); // Asociamos el autor al libro
+            }
+            // Guardamos el libro (y su relación con autores) en la base de datos
+            libroRepositorio.save(libro);
+
+            // Recuperamos el libro ya guardado desde la base de datos (para mostrar datos confirmados)
+            // Mostrar datos desde el objeto que acabamos de guardar
+            System.out.println("Libro guardado exitosamente:");
+            System.out.println("----------LIBRO---------");
+            System.out.println("Título: " + libro.getTitulo());
+            System.out.println("Idioma: " + libro.getIdiomas());
+            System.out.println("Número de descargas: " + libro.getNumeroDescargas());
+            System.out.println("Autor(es): ");
+            libro.getAutores().forEach(a -> System.out.println(" - " + a.getNombre()));
+            System.out.println("----------*****----------");
+
         }else {
             System.out.println("Libro no encontrado");
         }
