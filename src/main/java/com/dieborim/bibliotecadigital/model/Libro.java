@@ -2,6 +2,8 @@ package com.dieborim.bibliotecadigital.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collections;
+
 /**
  * Con Entity le estamos indicando a java que esta clase va a ser una tabla en una base de datos
  */
@@ -28,7 +30,7 @@ public class Libro {
      * Con Enumerated indicamos que este atributo viene de un enum
      */
     @Enumerated(EnumType.STRING)
-    private Idiomas idiomas;
+    private Idiomas idioma;
     private Integer numeroDescargas;
     @ManyToOne
     private Autor autor;
@@ -39,10 +41,18 @@ public class Libro {
          */
     }
 
-    public Libro(DatosLibro datosLibro){
+    public Libro(DatosLibro datosLibro, Autor autor){
         this.titulo = datosLibro.titulo();
-        this.idiomas = Idiomas.fromList(datosLibro.idiomas());
+        this.idioma = Idiomas.fromCodigo(datosLibro.idioma());
         this.numeroDescargas = datosLibro.numeroDescargas();
+        /**
+         * El constructor del libro recibe un objeto Autor para establecer
+         * la relación ManyToOne entre Libro y Autor. Aunque no se vea
+         * explícitamente una columna con el nombre del autor en la tabla,
+         * Hibernate genera una columna 'autor_id' como clave foránea
+         * que conecta este libro con su autor correspondiente.
+         */
+        this.autor = autor;
     }
 
     public Autor getAutor() {
@@ -62,11 +72,11 @@ public class Libro {
     }
 
     public String getIdiomas() {
-        return idiomas.getNombreIdioma();
+        return idioma.getNombreIdioma();
     }
 
     public void setIdiomas(Idiomas idiomas) {
-        this.idiomas = idiomas;
+        this.idioma = idiomas;
     }
 
     public String getTitulo() {

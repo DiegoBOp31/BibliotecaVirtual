@@ -26,17 +26,16 @@ public enum Idiomas {
     }
 
     /**
-     * Este método toma una lista de códigos de idioma (por ejemplo ["en", "es"])
+     * Este método toma uno de códigos de idioma (por ejemplo "en", "es")
      * y devuelve el primero que coincida con los que tiene el enum.
-     * Si la lista está vacía o el idioma no está soportado, lanza una excepción.
+     * Si el idioma no está soportado, lanza una excepción.
      */
-    public static Idiomas fromList(List<String> idiomas) {
-        if (idiomas == null || idiomas.isEmpty()) {
+    public static Idiomas fromCodigo(String codigo) {
+        if (codigo == null || codigo.isEmpty()) {
             return UNKNOWN;
         }
-        String codigo = idiomas.get(0); // Tomamos el primer código de idioma, ej: "en"
         try {
-            return Idiomas.valueOf(codigo); // Compara con el nombre de las constantes del enum
+            return Idiomas.valueOf(codigo); // ej: "en"
         } catch (IllegalArgumentException e) {
             return UNKNOWN;
         }
