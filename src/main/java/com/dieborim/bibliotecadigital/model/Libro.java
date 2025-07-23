@@ -2,9 +2,6 @@ package com.dieborim.bibliotecadigital.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Con Entity le estamos indicando a java que esta clase va a ser una tabla en una base de datos
  */
@@ -33,11 +30,8 @@ public class Libro {
     @Enumerated(EnumType.STRING)
     private Idiomas idiomas;
     private Integer numeroDescargas;
-    @ManyToMany
-    @JoinTable(name = "libros_autores",
-            joinColumns = @JoinColumn(name = "libro_id"),
-            inverseJoinColumns = @JoinColumn(name = "autor_id"))
-    private List<Autor> autores = new ArrayList<>();
+    @ManyToOne
+    private Autor autor;
 
     public Libro(){
         /**
@@ -51,21 +45,12 @@ public class Libro {
         this.numeroDescargas = datosLibro.numeroDescargas();
     }
 
-    /**
-     * Este método sirve para sincronizar la relación ManyToMany entre libros
-     * y autores desde el lado de la entidad Libro.
-     */
-    public void agregarAutor(Autor autor) {
-        autores.add(autor);
-        autor.getLibros().add(this);
+    public Autor getAutor() {
+        return autor;
     }
 
-    public List<Autor> getAutores() {
-        return autores;
-    }
-
-    public void setAutores(List<Autor> autores) {
-        this.autores = autores;
+    public void setAutor(Autor autor) {
+        this.autor = autor;
     }
 
     public Long getId() {

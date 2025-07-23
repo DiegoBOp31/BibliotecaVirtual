@@ -1,14 +1,13 @@
 package com.dieborim.bibliotecadigital.model;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "autores")
 public class Autor {
-    @Id //Con esto indicamos que este va a ser el identificador de nuestra tabla
+    @Id
+    //Con esto indicamos que este va a ser el identificador de nuestra tabla
     /**
      * //Con GeneratedValue le decimos a la base de datos que este campo se va a autogenerar automáticamente
      * (en este caso es un ID que se incrementa solo)
@@ -19,8 +18,8 @@ public class Autor {
     private String nombre;
     private Integer fechaNacimiento;
     private Integer fechaFallecimiento;
-    @ManyToMany(mappedBy = "autores")
-    private List<Libro> libros = new ArrayList<>();
+    @OneToMany(mappedBy = "autor",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Libro> libros;
 
     public Autor(){}
 
