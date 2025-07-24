@@ -8,16 +8,16 @@ public enum Idiomas {
      * Un enum es un tipo especial de clase que se usa para definir un
      * conjunto fijo de constantes.
      */
-    en ("inglés"),
-    fr ("francés"),
-    de ("alemán"),
-    es ("español"),
-    it ("italiano"),
-    fi ("finés"),
-    sv ("sueco"),
-    pt ("portugués"),
-    la ("latín"),
-    UNKNOWN("desconocido"); // Nuevo idioma por defecto
+    en ("Inglés"),
+    fr ("Francés"),
+    de ("Alemán"),
+    es ("Español"),
+    it ("Italiano"),
+    fi ("Finés"),
+    sv ("Sueco"),
+    pt ("Portugués"),
+    la ("Latín"),
+    UNKNOWN("Desconocido"); // Nuevo idioma por defecto
 
     private final String nombreIdioma;
 

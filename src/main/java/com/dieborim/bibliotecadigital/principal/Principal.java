@@ -16,7 +16,7 @@ public class Principal {
     /**
      * La palabra final nos indica que está va a ser una constante siempre
      */
-    private final String URL_BASE = "https://gutendex.com/books?search=";
+    private final String URL_BASE = "https://gutendex.com/books/?search=";
     private ConvertirDatos convertirDatos = new ConvertirDatos();
     private LibroRepository libroRepositorio;
     private AutorRepository autorRepositorio;
@@ -77,6 +77,7 @@ public class Principal {
         var libroBuscado = teclado.nextLine();
         //Hacemos la petición de los datos a la api
         var json = consumoAPI.obtenerDatos(URL_BASE+libroBuscado.replace(" ","%20"));
+//        System.out.println(json);
         //Convertimos el json obtenido en un objeto de la clase DatosResults
         var datosResults = convertirDatos.obtenerDatos(json, DatosResults.class);
         /**
@@ -89,6 +90,8 @@ public class Principal {
         Optional<DatosLibro> libroEncontrado = datosResults.listaDeLibros().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(libroBuscado.toUpperCase()))
                 .findFirst();
+//        System.out.println(libroEncontrado.get());
+
         /**
          *'libroEncontrado' es un Optional, lo que significa que puede contener un libro o estar vacío.
          *Primero verificamos si hay un libro presente con 'isPresent()'.
@@ -99,7 +102,7 @@ public class Principal {
              *Es importante hacer esta verificación antes de usar '.get()', para evitar errores si no se encuentra ningún libro.
              */
             var datosLibro = libroEncontrado.get();
-
+            
             /**
              *Inicializamos la variable 'autor' con null para evitar el error de compilación. Java es muy estricto con
              * las variables locales y necesita estar 100% seguro de que la variable será inicializada en todas las
@@ -119,9 +122,9 @@ public class Principal {
             var libroGuardado = libroRepositorio.findByTituloContainsIgnoreCase(libro.getTitulo());
             System.out.println("----------LIBRO----------");
             System.out.println("Título: "+libroGuardado.get().getTitulo());
+            System.out.println("Autor: "+libroGuardado.get().getAutor().getNombre());
             System.out.println("Idioma: "+libroGuardado.get().getIdiomas());
             System.out.println("Número de descargas: "+libroGuardado.get().getTitulo());
-            System.out.println("Autor: "+libroGuardado.get().getAutor().getNombre());
             System.out.println("----------*****----------");
         }else {
             System.out.println("Libro no encontrado");
