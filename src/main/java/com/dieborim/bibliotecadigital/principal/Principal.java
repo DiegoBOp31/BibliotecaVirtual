@@ -6,6 +6,7 @@ import com.dieborim.bibliotecadigital.repository.LibroRepository;
 import com.dieborim.bibliotecadigital.service.ConsumoAPI;
 import com.dieborim.bibliotecadigital.service.ConvertirDatos;
 
+import java.util.InputMismatchException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -29,7 +30,6 @@ public class Principal {
     public void muestraElMenu(){
         var eleccionDelUsuario = -1;
         while (eleccionDelUsuario != 0){
-
             String menu = """
                 ------------------------------
                 Elija una opción del menú:
@@ -42,9 +42,13 @@ public class Principal {
                 ------------------------------
                 """;
             System.out.println(menu);
-            eleccionDelUsuario = teclado.nextInt();
-            teclado.nextLine();
-
+            //Validación para entradas que no son números
+            try{
+                eleccionDelUsuario = teclado.nextInt();
+                teclado.nextLine();
+            }catch (InputMismatchException e){
+                teclado.nextLine();
+            }
             switch (eleccionDelUsuario){
                 case 1:
                     buscarLibro();
@@ -63,6 +67,8 @@ public class Principal {
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
+                    //Forzar cierre de la app
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Opción inválida");
@@ -102,7 +108,12 @@ public class Principal {
              *Es importante hacer esta verificación antes de usar '.get()', para evitar errores si no se encuentra ningún libro.
              */
             var datosLibro = libroEncontrado.get();
-            
+
+            //Validación para revisar si es que ya existe el libro en la db o no
+            if (libroRepositorio.findByTituloContainsIgnoreCase(datosLibro.titulo()).isPresent()) {
+                System.out.println("El libro ya existe en la base de datos.");
+                return; // Esto te saca del método actual y te regresa al menú
+            }
             /**
              *Inicializamos la variable 'autor' con null para evitar el error de compilación. Java es muy estricto con
              * las variables locales y necesita estar 100% seguro de que la variable será inicializada en todas las
@@ -124,7 +135,7 @@ public class Principal {
             System.out.println("Título: "+libroGuardado.get().getTitulo());
             System.out.println("Autor: "+libroGuardado.get().getAutor().getNombre());
             System.out.println("Idioma: "+libroGuardado.get().getIdiomas());
-            System.out.println("Número de descargas: "+libroGuardado.get().getTitulo());
+            System.out.println("Número de descargas: "+libroGuardado.get().getNumeroDescargas());
             System.out.println("----------*****----------");
         }else {
             System.out.println("Libro no encontrado");
