@@ -14,6 +14,6 @@ public interface AutorRepository extends JpaRepository<Autor,Long> {
      *  * Tener este repositorio separado ayuda a mantener una sincronización correcta entre ambas entidades,
      *  * especialmente cuando un autor puede estar asociado a varios libros distintos.
      */
-    Optional<Autor> findByNombre(String nombre);
+    Optional<Autor> findByNombreContainsIgnoreCase(String nombre);
 
 }

@@ -43,7 +43,7 @@ public class Libro {
 
     public Libro(DatosLibro datosLibro, Autor autor){
         this.titulo = datosLibro.titulo();
-        this.idioma = Idiomas.fromCodigo(datosLibro.idioma());
+        this.idioma = Idiomas.fromList(datosLibro.idiomas());
         this.numeroDescargas = datosLibro.numeroDescargas();
         /**
          * El constructor del libro recibe un objeto Autor para establecer

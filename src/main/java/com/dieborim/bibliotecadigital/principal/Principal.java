@@ -89,31 +89,40 @@ public class Principal {
         Optional<DatosLibro> libroEncontrado = datosResults.listaDeLibros().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(libroBuscado.toUpperCase()))
                 .findFirst();
+        /**
+         *'libroEncontrado' es un Optional, lo que significa que puede contener un libro o estar vacío.
+         *Primero verificamos si hay un libro presente con 'isPresent()'.
+         */
         if(libroEncontrado.isPresent()){
+            /**
+             *Si sí lo hay, usamos '.get()' para obtener el objeto DatosLibro real dentro del Optional.
+             *Es importante hacer esta verificación antes de usar '.get()', para evitar errores si no se encuentra ningún libro.
+             */
             var datosLibro = libroEncontrado.get();
-            // Creamos una instancia de la entidad Libro usando los datos que vinieron de la API
-            var libro = new Libro(datosLibro);
-            // Por cada autor que vino en la API, buscamos si ya existe en la base de datos
-            // Si no existe, lo creamos. Luego lo asociamos al libro.
-            for (DatosAutor datosAutor : datosLibro.autores()) {
-                Autor autor = autorRepositorio.findByNombre(datosAutor.nombre())
-                        .orElseGet(() -> new Autor(datosAutor)); // Si no existe, lo crea
-                libro.agregarAutor(autor); // Asociamos el autor al libro
+
+            /**
+             *Inicializamos la variable 'autor' con null para evitar el error de compilación. Java es muy estricto con
+             * las variables locales y necesita estar 100% seguro de que la variable será inicializada en todas las
+             * posibles rutas del código, así que le damos un valor inicial para que esté satisfecho.
+             */
+            Autor autor = null;
+            if (!datosLibro.autores().isEmpty()){
+                var datosAutor = datosLibro.autores().get(0);
+                autor = autorRepositorio.findByNombreContainsIgnoreCase(datosAutor.nombre())
+                        .orElseGet(() -> autorRepositorio.save(new Autor(datosAutor)));
             }
+            // Creamos una instancia de la entidad Libro usando los datos que vinieron de la API
+            var libro = new Libro(datosLibro, autor);
             // Guardamos el libro (y su relación con autores) en la base de datos
             libroRepositorio.save(libro);
-
             // Recuperamos el libro ya guardado desde la base de datos (para mostrar datos confirmados)
-            // Mostrar datos desde el objeto que acabamos de guardar
-            System.out.println("Libro guardado exitosamente:");
-            System.out.println("----------LIBRO---------");
-            System.out.println("Título: " + libro.getTitulo());
-            System.out.println("Idioma: " + libro.getIdiomas());
-            System.out.println("Número de descargas: " + libro.getNumeroDescargas());
-            System.out.println("Autor(es): ");
-            libro.getAutores().forEach(a -> System.out.println(" - " + a.getNombre()));
+            var libroGuardado = libroRepositorio.findByTituloContainsIgnoreCase(libro.getTitulo());
+            System.out.println("----------LIBRO----------");
+            System.out.println("Título: "+libroGuardado.get().getTitulo());
+            System.out.println("Idioma: "+libroGuardado.get().getIdiomas());
+            System.out.println("Número de descargas: "+libroGuardado.get().getTitulo());
+            System.out.println("Autor: "+libroGuardado.get().getAutor().getNombre());
             System.out.println("----------*****----------");
-
         }else {
             System.out.println("Libro no encontrado");
         }
