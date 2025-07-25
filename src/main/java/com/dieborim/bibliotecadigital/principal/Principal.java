@@ -6,9 +6,7 @@ import com.dieborim.bibliotecadigital.repository.LibroRepository;
 import com.dieborim.bibliotecadigital.service.ConsumoAPI;
 import com.dieborim.bibliotecadigital.service.ConvertirDatos;
 
-import java.util.InputMismatchException;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 public class Principal {
 
@@ -131,12 +129,12 @@ public class Principal {
             libroRepositorio.save(libro);
             // Recuperamos el libro ya guardado desde la base de datos (para mostrar datos confirmados)
             var libroGuardado = libroRepositorio.findByTituloContainsIgnoreCase(libro.getTitulo());
-            System.out.println("----------LIBRO----------");
+            System.out.println("---------------LIBRO---------------");
             System.out.println("Título: "+libroGuardado.get().getTitulo());
             System.out.println("Autor: "+libroGuardado.get().getAutor().getNombre());
             System.out.println("Idioma: "+libroGuardado.get().getIdiomas());
             System.out.println("Número de descargas: "+libroGuardado.get().getNumeroDescargas());
-            System.out.println("----------*****----------");
+            System.out.println("---------------*****---------------");
         }else {
             System.out.println("Libro no encontrado");
         }
@@ -144,10 +142,44 @@ public class Principal {
     }
 
     private void listarLibrosRegistrados() {
-
+        List<Libro> libros = libroRepositorio.findAll();
+        if (libros.isEmpty()) {
+            System.out.println("No hay libros registrados.");
+        } else {
+            System.out.println("----------LIBROS REGISTRADOS----------");
+            libros.forEach(libro -> {
+                System.out.println("---------------LIBRO---------------");
+                System.out.println("Título: "+libro.getTitulo());
+                System.out.println("Autor: "+libro.getAutor().getNombre());
+                System.out.println("Idioma: "+libro.getIdiomas());
+                System.out.println("Número de descargas: "+libro.getNumeroDescargas());
+                System.out.println("---------------*****---------------");
+            });
+        }
     }
 
     private void listarAutoresRegistrados() {
+        List<Autor> autores = autorRepositorio.findAll();
+        if (autores.isEmpty()) {
+            System.out.println("No hay autores registrados.");
+        } else {
+            System.out.println("---------------AUTORES REGISTRADOS---------------:");
+            autores.forEach(autor -> {
+                System.out.println("---------------AUTOR---------------");
+                System.out.println("Nombre: "+autor.getNombre());
+                System.out.println("Fecha de nacimiento: "+autor.getFechaNacimiento());
+                System.out.println("Fecha de fallecimiento: "+autor.getFechaFallecimiento());
+
+                // Obtenemos los libros de ese autor
+                List<Libro> librosDelAutor = libroRepositorio.findByAutor(autor);
+                List<String> nombresDeLibros = new ArrayList<>();
+                for (Libro libro : librosDelAutor) {
+                    nombresDeLibros.add(libro.getTitulo());
+                }
+                System.out.println("Libros del autor: "+nombresDeLibros);
+                System.out.println("---------------*****---------------");
+            });
+        }
     }
 
     private void listarAutoresVivosPorAnio() {
