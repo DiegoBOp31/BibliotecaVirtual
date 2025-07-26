@@ -183,9 +183,76 @@ public class Principal {
     }
 
     private void listarAutoresVivosPorAnio() {
+        System.out.println("Ingresa el año de búsqueda: ");
+        boolean valido = false;
+        Integer anio = 0;
+        //Esta validación sólo es para ingresar un año correctamente
+        while (!valido) {
+            try {
+                anio = teclado.nextInt();
+                teclado.nextLine();
+                valido = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Eso no es un número. Inténtalo de nuevo.");
+                teclado.nextLine(); // Limpiar entrada
+            }
+        }
+        //Aquí llamamos la consulta que hicimos en el repository de autor
+        List<Autor> autoresVivos = autorRepositorio.encontrarAutoresVivosEnAnio(anio);
+        if (autoresVivos.isEmpty()) {
+            System.out.println("No hay autores registrados que hayan vivido en ese año.");
+        } else {
+            System.out.println("---------------AUTORES REGISTRADOS---------------:");
+            autoresVivos.forEach(autor -> {
+                System.out.println("---------------AUTOR---------------");
+                System.out.println("Nombre: "+autor.getNombre());
+                System.out.println("Fecha de nacimiento: "+autor.getFechaNacimiento());
+                System.out.println("Fecha de fallecimiento: "+autor.getFechaFallecimiento());
+
+                // Obtenemos los libros de ese autor
+                List<Libro> librosDelAutor = libroRepositorio.findByAutor(autor);
+                List<String> nombresDeLibros = new ArrayList<>();
+                for (Libro libro : librosDelAutor) {
+                    nombresDeLibros.add(libro.getTitulo());
+                }
+                System.out.println("Libros del autor: "+nombresDeLibros);
+                System.out.println("---------------*****---------------");
+            });
+        }
     }
 
     private void listarLibrosPorIdioma() {
+        System.out.println("""
+                Escribe el código del idioma por el cual quieres hacer la búsqueda de libros:
+                en = Inglés
+                fr = Francés
+                de = Alemán
+                es = Español
+                it = Italiano
+                fi = Finés
+                sv = Sueco
+                pt = Portugués
+                la = Latín
+                """);
+        try{
+            Idiomas idioma = Idiomas.valueOf(teclado.nextLine());
+            List<Libro> librosPorIdioma = libroRepositorio.findByIdioma(idioma);
+            System.out.println("Los libros en idioma ["+idioma+"] son:");
+            if (librosPorIdioma.isEmpty()) {
+                System.out.println("Todavía no hay libros registrados en ese idioma.");
+            } else {
+                librosPorIdioma.forEach(libro -> {
+                    System.out.println("---------------LIBRO---------------");
+                    System.out.println("Título: " + libro.getTitulo());
+                    System.out.println("Autor: " + libro.getAutor().getNombre());
+                    System.out.println("Idioma: " + libro.getIdiomas());
+                    System.out.println("Número de descargas: " + libro.getNumeroDescargas());
+                    System.out.println("---------------*****---------------");
+                });
+            }
+        }catch (IllegalArgumentException e){
+            System.out.println("Idioma inválido. Asegúrate de escribir uno de los códigos disponibles.");
+        }
     }
 
 

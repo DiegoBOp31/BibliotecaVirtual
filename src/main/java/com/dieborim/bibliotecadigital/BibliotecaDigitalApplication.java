@@ -34,6 +34,5 @@ public class BibliotecaDigitalApplication implements CommandLineRunner {
 		 */
 		Principal principal = new Principal(libroRepository, autorRepository);
 		principal.muestraElMenu();
-
 	}
 }
